@@ -52,31 +52,29 @@ function appendPageLinks(list)
       a.className = "active";
     }
   }
-  let pageNumber = document.querySelectorAll("div.pagination > ul > li > a")
-  for( i = 0; i < pageNumber.length; i++)
+  let pageNumber = document.querySelector("div.pagination");
+  pageNumber.addEventListener("click" ,  function()
   {
-    pageNumber[i].addEventListener("click" ,  function()
-    {
-      for( i = 0; i < pageNumber.length; i++)
-      {
-        pageNumber[i].className = "";
-      }
-      event.target.className = "active";
-      showPage( list, event.target.textContent );
-    });
-  }
+    showPage( list, event.target.textContent );
+    let link = document.querySelectorAll ("div.pagination > ul > li > a");
+    for( i = 0; i < link.length; i++)
+        {
+          link[i].className = "";
+        }
+    event.target.className = "active";
+  });
 }
+
 //function that creates a search bar at the top of the list
 function searchBar(){
   let searchBar = document.createElement('input');
-  let button = document.createElement('button');
-  let studentList = document.querySelector('ul.student-list');
-  let searchButton = studentList.insertBefore(button, studentList.firstChild);
-  input = studentList.insertBefore(searchBar, studentList.firstChild);
+  let div = document.createElement('div');
+  let studentList = document.querySelector('div.page-header');
+  let addDiv = studentList.insertBefore(div, studentList.firstChild);
+  input = addDiv.insertBefore(searchBar, addDiv.firstChild);
+  div.className = "student-search";
   input.type = "text";
   input.placeholder = "Search";
-  button.type = "Submit";
-  button.textContent = "Search";
   input.onkeyup = search;
 }
 
