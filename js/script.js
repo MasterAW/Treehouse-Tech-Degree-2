@@ -8,17 +8,22 @@ FSJS project 2 - List Filter and Pagination
 //global variables that are used in multiple functions
 const listItem = document.querySelectorAll('li.student-item');
 const itemPerPage = 10;
+let input;
 
 //showPage function calculates the index of the list to display depending on the page number
-function showPage( list, page ){
+function showPage( list, page )
+{
   let startIndex = (page * itemPerPage) - itemPerPage;
   let endIndex = page * itemPerPage;
-  for( let i = 0; i < list.length; i++ ){
-    if( i < startIndex || i > endIndex){
-      listItem[i].style.display = "none";
+  for( let i = 0; i < list.length; i++ )
+  {
+    if( i < startIndex || i >= endIndex)
+    {
+      list[i].style.display = "none";
     }
-    else{
-      listItem[i].style.display = "list-item";
+    else
+    {
+      list[i].style.display = "list-item";
     }
   }
 }
@@ -57,11 +62,59 @@ function appendPageLinks(list)
         pageNumber[i].className = "";
       }
       event.target.className = "active";
-      showPage( listItem, event.target.textContent );
+      showPage( list, event.target.textContent );
     });
   }
+}
+//function that creates a search bar at the top of the list
+function searchBar(){
+  let searchBar = document.createElement('input');
+  let button = document.createElement('button');
+  let studentList = document.querySelector('ul.student-list');
+  let searchButton = studentList.insertBefore(button, studentList.firstChild);
+  input = studentList.insertBefore(searchBar, studentList.firstChild);
+  input.type = "text";
+  input.placeholder = "Search";
+  button.type = "Submit";
+  button.textContent = "Search";
+  input.onkeyup = search;
+}
+
+//the search function which hides all student names not meeting the search query and running appendPageLinks and showPage with the new list of students meeting the search criteria
+function search(){
+  let searchResult = [];
+  for( var i = 0; i < listItem.length; i++)
+  {
+    let names = listItem[i].querySelector('h3');
+    if( names.textContent.indexOf(input.value) > -1)
+  {
+    searchResult.push(listItem[i]);
+  }
+    else
+    {
+    listItem[i].style.display = "none";
+    }
+  }
+  let noticeCheck = document.querySelector('ul.student-list > p');
+  if(noticeCheck !== null)
+  {
+    noticeCheck.remove();
+  }
+  if(searchResult === undefined || searchResult.length == 0)
+  {
+    let notice = document.querySelector('ul.student-list');
+    let p = document.createElement('p');
+    notice.appendChild(p);
+    p.textContent = "There are no results!";
+  }
+  let div = document.querySelector('div.pagination');
+  div.remove();
+  appendPageLinks( searchResult );
+  showPage( searchResult, 1 );
+
 }
 
 //running the function for the first time.
 showPage( listItem, 1 );
 appendPageLinks(listItem);
+searchBar();
